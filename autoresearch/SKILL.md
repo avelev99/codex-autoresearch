@@ -1,181 +1,149 @@
 ---
 name: autoresearch
-description: Autonomous goal-directed iteration for metric-driven improvement, debugging, fixing failing tests or builds, security auditing, shipping readiness, scenario exploration, multi-perspective code analysis, codebase documentation, and design-decision reasoning. Use when the user asks to run autoresearch, keep iterating until done, improve a measurable metric, hunt bugs, fix errors, audit for vulnerabilities, generate edge cases, analyze code from multiple expert angles, document a codebase, or reason through a technical decision.
+description: Metric-driven autonomous iteration for Codex. Use when the user wants Codex to set up a constrained experiment loop, improve a measurable metric, run repeated debug or fix passes, perform a scoped security or quality audit, keep iterating on a bounded file set, or reason through a design decision using explicit verification and keep-or-revert mechanics.
 ---
 
-# Autoresearch for Codex
+# Autoresearch
 
-Use this skill as an operating mode inside Codex, not as a literal slash-command plugin.
+Autoresearch is a Codex operating model derived from Karpathy's `program.md`, not a literal slash-command system.
 
-## Translation Layer
+The core idea is simple:
 
-The bundled source material came from a Claude-style command package. Translate it before acting:
+1. Constrain the scope hard enough that Codex can understand it.
+2. Choose one mechanical success criterion.
+3. Make one focused change.
+4. Verify.
+5. Keep or revert.
+6. Repeat.
 
-- Treat `/autoresearch` and `/autoresearch:*` as mode names or natural-language requests, not literal commands.
-- Treat `AskUserQuestion` as asking the user directly in concise plain text after inspecting the repo for smart defaults.
-- Treat mentions of `Claude Code`, `claude -p`, plugin installation, or `.claude/` paths as legacy source wording. Prefer Codex-native behavior and the current workspace.
-- Treat chained slash-command flows as sequential modes in the same conversation.
-- Do not depend on hidden UI question tools, batched forms, or command registries.
-- Do not use subagents unless the user explicitly asks for subagents, delegation, or parallel agent work. If the user has not granted that, simulate multiple perspectives locally in a structured single-agent analysis.
+## When To Use This Skill
 
-## Shared Operating Rules
+Use this skill when the user wants:
 
-- Read the relevant files before proposing or making changes.
-- Prefer mechanical metrics, reproducible checks, and explicit baselines.
-- When iterating, change one meaningful idea at a time when practical so causality stays clear.
-- Keep iteration notes concise. Persist logs or output directories only if the user asked for artifacts or the task materially benefits from durable logs.
-- Do not auto-commit every experiment. Use commit-based iteration only when the user asked for it or when it is clearly part of the requested workflow.
-- If critical context is missing, inspect the repo first, then ask the minimum number of direct questions needed to unblock the next step.
-- If the user asks for autonomy, continue through implementation and verification; do not stop at a plan unless the missing context is genuinely blocking.
+- metric-driven optimization
+- a bounded experiment loop
+- autonomous debugging with a hypothesis queue
+- iterative fixing until errors drop to zero
+- a scoped security or quality audit with evidence
+- documentation updates validated against code
+- structured comparison of competing technical options
 
-## Mode Selection
+Do not use this skill for casual one-shot edits that do not benefit from iteration, metrics, or explicit keep-or-revert decisions.
 
-Map the user request to one of these modes:
+## Codex Translation
 
-| Mode | Use For | Reference |
-|---|---|---|
-| `plan` | Define goal, scope, metric, direction, and verify command before an optimization loop | `references/plan-workflow.md` |
-| `loop` | Improve a measurable metric iteratively | `references/autonomous-loop-protocol.md` |
-| `debug` | Investigate bugs or failures with hypotheses and evidence | `references/debug-workflow.md` |
-| `fix` | Reduce error count until tests, types, lint, or build pass | `references/fix-workflow.md` |
-| `security` | Perform a threat-focused audit and report evidence-backed findings | `references/security-workflow.md` |
-| `ship` | Check readiness, dry-run, and execute a release or delivery workflow | `references/ship-workflow.md` |
-| `scenario` | Generate use cases, edge cases, failure modes, or test scenarios | `references/scenario-workflow.md` |
-| `predict` | Analyze code from several expert perspectives before acting | `references/predict-workflow.md` |
-| `learn` | Generate, update, or validate project documentation | `references/learn-workflow.md` |
-| `reason` | Refine a subjective technical decision through structured critique | `references/reason-workflow.md` |
+Translate the original Claude-oriented material into Codex-native behavior:
 
-If the user says "run autoresearch" without enough detail:
+- Treat slash-command examples as aliases for plain-language requests.
+- Ask direct plain-text questions only for the missing fields that materially affect execution.
+- Inspect the repo for defaults before asking.
+- Use subagents only when the user explicitly asked for subagents, delegation, or parallel agent work.
+- Default to bounded loops unless the user explicitly asks for indefinite or overnight autonomy.
 
-- Use `plan` first when goal, metric, direction, or verify command are missing.
-- Use `loop` directly only when goal, scope, metric, direction, and verify command are already clear.
+## Shared Invariants
 
-## Context Gathering
+- Humans set direction; Codex executes the experiment loop.
+- Read all in-scope files before changing them.
+- Keep the writable scope intentionally small, ideally one file or one subsystem when possible.
+- Prefer one primary metric, not a scoreboard.
+- Try to keep iteration cost roughly comparable across experiments when the task allows it.
+- Use the fastest verification that is still trustworthy.
+- Establish a baseline before the first change.
+- Make one meaningful change per iteration when practical.
+- Preserve user work. Never wipe unrelated changes.
+- If git is part of the workflow, prefer reversible operations and use history as memory.
+- If git is not part of the workflow, keep the experiment log in the response or a local artifact only when useful.
 
-Before running any mode:
+## Setup Contract
 
-1. Inspect the repo for likely defaults, constraints, and available verification commands.
-2. Infer what can be answered locally without asking the user.
-3. Ask direct plain-text questions only for the missing pieces that materially change execution.
+Before starting a loop, resolve these fields:
 
-Question style for Codex:
+| Field | Meaning |
+|---|---|
+| `goal` | What should improve |
+| `scope` | Files Codex may modify |
+| `read_only` | Files or paths Codex may inspect but not change |
+| `metric` | Single mechanical criterion |
+| `direction` | Higher or lower is better |
+| `verify` | Exact command or procedure that produces the metric |
+| `guard` | Optional command that must keep passing |
+| `budget` | Iteration count, time limit, or explicit stop rule |
+| `git_policy` | Whether commit-based memory is required, optional, or disabled |
+| `artifact_policy` | Whether to create logs, reports, or result files |
 
-- Keep questions short.
-- Ask for the smallest missing set, not a full questionnaire.
-- Prefer one concise grouped message over a long wizard.
-- If the user already implied a reasonable default, proceed with that default and state the assumption.
+If any critical field is missing, inspect the repo first, then ask the smallest direct question set needed to unblock execution.
 
-## Mode Guidance
+## Default Execution Modes
 
-### `plan`
+Pick the lightest mode that fits the task, then load the matching playbook from `references/playbooks.md`.
 
-Use when the task needs a reliable optimization setup.
+| Mode | Use For |
+|---|---|
+| `optimize` | Improve a measured metric |
+| `debug` | Investigate failures with explicit hypotheses |
+| `fix` | Reduce error count until a broken state is repaired |
+| `audit` | Security or quality review with evidence-backed findings |
+| `docs` | Generate or refresh documentation and verify it against code |
+| `design` | Compare options and converge on a reasoned recommendation |
 
-- Produce a concrete configuration with goal, scope, metric, direction, verify command, and optional guard.
-- Dry-run the verify command before accepting it.
-- Reject subjective or non-repeatable metrics.
-- If the user wants to proceed immediately, transition into `loop`.
+If the user simply says "run autoresearch," use `optimize` when a metric already exists, otherwise start with `plan` inside the optimize playbook.
 
-### `loop`
+## Loop Rules
 
-Use when a metric and verification method already exist.
+Load `references/core-loop.md` for the detailed protocol. In every mode:
 
-- Establish a baseline first.
-- Iterate on focused changes.
-- Re-run the metric after each change.
-- Keep the best known state and discard regressions.
-- If the user gave an iteration bound, stop after that bound and summarize results.
-- If the user asked to "keep going" or "iterate until done," continue until the goal is reached, diminishing returns are clear, or the user interrupts.
+1. Review current state, recent changes, and prior experiment notes.
+2. Choose the next best change or hypothesis.
+3. Apply one focused step.
+4. Verify mechanically.
+5. Keep, revert, or rework.
+6. Record the outcome if durable logging is enabled.
+7. Continue until the budget or stop condition is reached.
 
-### `debug`
+Default stop behavior for Codex:
 
-Use for failures, regressions, unexplained behavior, or root-cause analysis.
+- Stop at the requested iteration count.
+- Stop when the goal is achieved.
+- Stop when verification is no longer trustworthy.
+- Stop when returns clearly flatten and report why.
 
-- Start with symptoms, failing outputs, and reproduction evidence.
-- Form explicit hypotheses and test them.
-- Separate confirmed bugs from disproven hypotheses.
-- Prefer evidence-backed findings with file and line references.
-- Transition to `fix` if the user wants repairs after diagnosis.
+Do not assume an infinite unattended loop unless the user explicitly asked for that operating mode.
 
-### `fix`
+## Git Memory
 
-Use when the code is already known to be broken and the goal is to reduce the failure count.
+If the repo is clean and the user wants commit-based iteration:
 
-- Detect the failing domains first: tests, types, lint, build, runtime.
-- Prioritize high-signal blockers before cosmetic issues.
-- Verify that the error count decreases after each fix.
-- Use a guard command when reducing one failure class could regress another.
+- commit each candidate before verification
+- keep winning commits
+- revert losing commits instead of destroying history
+- read recent git history before the next iteration
 
-### `security`
+If the working tree is already dirty or the user did not ask for commit-based iteration, do not force git commits. Use a lighter-weight experiment log instead.
 
-Use for code audits, attack-surface review, or vulnerability hunting.
+## Subagents
 
-- Default to read-only unless the user explicitly asks for remediation.
-- Require code evidence for every finding.
-- Prioritize externally reachable, high-impact paths first.
-- Use STRIDE and OWASP as coverage frameworks, not as a substitute for evidence.
+If the user explicitly asks for subagents:
 
-### `ship`
+- delegate research, repo audit, or disjoint implementation tasks
+- keep ownership boundaries clear
+- integrate the final design in the main thread
 
-Use for release readiness, deployment, PR creation, or any final delivery workflow.
+If the user does not explicitly ask for subagents:
 
-- Identify what is being shipped and the destination.
-- Build a checklist from the actual repo state.
-- Dry-run where possible before irreversible actions.
-- Verify the shipped state after the action.
+- simulate perspectives locally
+- avoid hidden dependency on delegation
 
-### `scenario`
+## Reference Files
 
-Use for edge cases, use-case generation, or failure-mode exploration.
+Load only what is needed:
 
-- Start from a concrete actor plus action if possible.
-- Expand across success paths, errors, abuse paths, timing issues, data variation, integrations, and recovery.
-- Prefer concrete situations over abstract advice.
+- `references/core-loop.md` for the shared loop protocol
+- `references/playbooks.md` for mode-specific setup and execution
+- `references/logging.md` for experiment logs and result artifacts
 
-### `predict`
+## Safety
 
-Use for multi-perspective analysis before debugging, fixing, shipping, or auditing.
-
-- Simulate distinct reviewer roles locally unless the user explicitly asked for subagents.
-- Keep the perspectives independent in structure: for example architecture, security, performance, reliability, and devil's advocate.
-- Synthesize shared findings and preserve meaningful disagreement.
-- If the user requested a follow-on mode, hand off the ranked findings into that mode.
-
-### `learn`
-
-Use for documentation generation, refresh, or staleness checks.
-
-- Scout the codebase first.
-- Detect whether this is an initialization, update, check, or summary request.
-- Generate only the documentation that matches the repo and the user's scope.
-- Validate doc claims against the code before finalizing.
-- Do the work locally unless the user explicitly asked for delegation.
-
-### `reason`
-
-Use for design decisions, architectural tradeoffs, argument refinement, or other subjective technical questions.
-
-- Structure the reasoning as competing candidate views plus critique.
-- Keep judge criteria explicit.
-- Simulate multiple roles locally unless the user explicitly asked for subagents.
-- Converge on a recommendation, then state the tradeoffs and open risks.
-
-## Reference Usage
-
-Load only the reference file for the active mode. When reading a reference:
-
-- Apply the translation layer above before following any step.
-- Ignore legacy assumptions about special question tools or slash-command execution.
-- Keep the workflow substance; translate the interface mechanics.
-
-Useful references:
-
-- `references/core-principles.md` for the general autoresearch mindset.
-- `references/results-logging.md` when a durable iteration log would materially help.
-- `references/autonomous-loop-protocol.md` for detailed loop behavior in metric-driven work.
-
-## Safety and Escalation
-
-- If verification is impossible because the project lacks a runnable metric or the environment is broken, stop and explain the blocker clearly.
-- If a workflow would require destructive or high-risk actions, ask the user before proceeding.
-- If the task becomes primarily a review, prioritize findings, risks, regressions, and missing tests over summaries.
+- Reject subjective metrics for optimize or fix loops.
+- Ask before destructive or production-facing actions.
+- If the task turns into a review, prioritize findings and risks over narration.
+- If verification cannot be made trustworthy, say so clearly and stop.
