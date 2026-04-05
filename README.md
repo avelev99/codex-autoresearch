@@ -27,14 +27,23 @@ This repo keeps the core loop and a few compact playbooks:
 - `docs`
 - `design`
 
+It also ships two lightweight assets:
+
+- `program-template.md` for pinning down a run contract
+- `results.tsv` for a minimal experiment log
+
 ## Repo Layout
 
 ```text
 autoresearch/
   SKILL.md
   agents/openai.yaml
+  assets/
+    program-template.md
+    results.tsv
   references/
     core-loop.md
+    modes.md
     logging.md
     playbooks.md
 ```

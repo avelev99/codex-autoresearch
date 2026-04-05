@@ -25,6 +25,8 @@ Use this skill when the user wants:
 - autonomous debugging with a hypothesis queue
 - iterative fixing until errors drop to zero
 - a scoped security or quality audit with evidence
+- structured scenario exploration for edge cases or failure modes
+- multi-perspective pre-analysis before implementation or review
 - documentation updates validated against code
 - structured comparison of competing technical options
 
@@ -73,9 +75,11 @@ Before starting a loop, resolve these fields:
 
 If any critical field is missing, inspect the repo first, then ask the smallest direct question set needed to unblock execution.
 
+For longer or unattended runs, prefer a durable run folder. If artifacts are warranted, initialize one with `scripts/init_run.py` and treat the generated `contract.md` as the local equivalent of Karpathy's `program.md`: the human sets the contract, Codex executes inside it.
+
 ## Default Execution Modes
 
-Pick the lightest mode that fits the task, then load the matching playbook from `references/playbooks.md`.
+Pick the lightest mode that fits the task. Use `references/modes.md` for the quick mode chooser and `references/playbooks.md` for setup and execution details.
 
 | Mode | Use For |
 |---|---|
@@ -83,6 +87,8 @@ Pick the lightest mode that fits the task, then load the matching playbook from 
 | `debug` | Investigate failures with explicit hypotheses |
 | `fix` | Reduce error count until a broken state is repaired |
 | `audit` | Security or quality review with evidence-backed findings |
+| `scenario` | Generate edge cases, failure modes, or concrete test situations |
+| `predict` | Run a multi-perspective analysis before acting |
 | `docs` | Generate or refresh documentation and verify it against code |
 | `design` | Compare options and converge on a reasoned recommendation |
 
@@ -140,6 +146,7 @@ Load only what is needed:
 - `references/core-loop.md` for the shared loop protocol
 - `references/playbooks.md` for mode-specific setup and execution
 - `references/logging.md` for experiment logs and result artifacts
+- `scripts/init_run.py` when the task needs a durable run folder with a contract and result log
 
 ## Safety
 

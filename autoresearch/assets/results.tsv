@@ -1,0 +1,5 @@
+# Autoresearch results template
+# Use one row per iteration.
+# status values: baseline, keep, discard, crash, no-op
+# delta should reflect change from the previous run.
+iteration	commit	metric	delta	status	description
