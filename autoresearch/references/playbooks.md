@@ -91,6 +91,52 @@ Output:
 - residual risks
 - optional remediation queue
 
+## Scenario
+
+Use for edge cases, failure modes, or concrete test-scenario generation.
+
+Setup:
+
+- seed scenario
+- scope if the scenario maps to a subsystem
+- desired output format: use cases, test scenarios, threat scenarios, or mixed
+- budget
+
+Loop:
+
+- expand one dimension at a time: happy path, invalid input, scale, timing, permissions, integrations, recovery
+- prefer concrete situations over abstract advice
+- keep duplicates out of the result set
+
+Output:
+
+- concrete scenarios
+- notable gaps or missing defenses
+- optional handoff to `audit`, `debug`, or `fix`
+
+## Predict
+
+Use for a multi-perspective pre-analysis before acting.
+
+Setup:
+
+- scope
+- focus: reliability, security, performance, architecture, or mixed
+- whether to simulate perspectives locally or delegate with explicit subagents
+
+Loop:
+
+- create a small set of distinct reviewer roles
+- let each role inspect the same evidence from its angle
+- preserve disagreement where it changes the recommendation
+- synthesize a ranked queue of likely issues or next steps
+
+Output:
+
+- prioritized findings or hypotheses
+- disagreements worth testing
+- optional handoff to `optimize`, `debug`, `fix`, `audit`, or `design`
+
 ## Docs
 
 Use to create or refresh project documentation.
@@ -141,3 +187,5 @@ When the user wants autoresearch but the setup contract is incomplete, run a sho
 3. dry-run verification if applicable
 4. restate the working contract
 5. begin the chosen playbook
+
+For longer runs, initialize `.autoresearch/<tag>/` with `scripts/init_run.py` so the contract and results log live together.

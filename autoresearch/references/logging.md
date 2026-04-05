@@ -78,3 +78,17 @@ Create files only when:
 - another tool or workflow will consume the artifact
 
 Do not commit logs by default unless the user asked for versioned experiment history.
+
+If you want a ready-made folder structure instead of manual files, use `scripts/init_run.py` to scaffold `.autoresearch/<tag>/`.
+
+Recommended run folder when artifacts are needed:
+
+```text
+.autoresearch/<tag>/
+  contract.md
+  results.tsv
+  notes.md
+  summary.md
+```
+
+Use `scripts/init_run.py --tag <name> --path <repo-root>` to scaffold this structure.

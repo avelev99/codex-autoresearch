@@ -24,13 +24,16 @@ This repo keeps the core loop and a few compact playbooks:
 - `debug`
 - `fix`
 - `audit`
+- `scenario`
+- `predict`
 - `docs`
 - `design`
 
-It also ships two lightweight assets:
+It also ships lightweight reusable scaffolding:
 
 - `program-template.md` for pinning down a run contract
 - `results.tsv` for a minimal experiment log
+- `init_run.py` for creating a durable `.autoresearch/<tag>/` folder
 
 ## Repo Layout
 
@@ -41,9 +44,10 @@ autoresearch/
   assets/
     program-template.md
     results.tsv
+  scripts/
+    init_run.py
   references/
     core-loop.md
-    modes.md
     logging.md
     playbooks.md
 ```
@@ -63,6 +67,22 @@ Copy-Item -Recurse .\autoresearch "$env:CODEX_HOME\\skills\\autoresearch"
 ```
 
 If `CODEX_HOME` is unset, the default location is usually `~/.codex/skills/autoresearch`.
+
+## Usage
+
+Short example:
+
+```text
+Use $autoresearch to set up a bounded fix loop for the failing TypeScript checks in src/auth, using `pnpm exec tsc --noEmit` as the metric and `pnpm test` as the guard.
+```
+
+For longer runs, initialize a durable run folder:
+
+```powershell
+py -3 .\autoresearch\scripts\init_run.py --tag auth-fix-pass-1 --path .
+```
+
+Then fill in `.autoresearch/auth-fix-pass-1/contract.md` and keep the loop inside that contract.
 
 ## Attribution
 

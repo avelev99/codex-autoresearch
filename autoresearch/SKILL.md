@@ -1,6 +1,6 @@
 ---
 name: autoresearch
-description: Metric-driven autonomous iteration for Codex. Use when the user wants Codex to set up a constrained experiment loop, improve a measurable metric, run repeated debug or fix passes, perform a scoped security or quality audit, keep iterating on a bounded file set, or reason through a design decision using explicit verification and keep-or-revert mechanics.
+description: Metric-driven autonomous iteration for Codex. Use when the user wants Codex to set up a constrained experiment loop, improve a measurable metric, run repeated debug or fix passes, perform a scoped security or quality audit, explore scenarios or edge cases, run multi-perspective pre-analysis, refresh documentation against code, or reason through a technical decision using explicit verification and keep-or-revert mechanics.
 ---
 
 # Autoresearch
@@ -79,7 +79,7 @@ For longer or unattended runs, prefer a durable run folder. If artifacts are war
 
 ## Default Execution Modes
 
-Pick the lightest mode that fits the task. Use `references/modes.md` for the quick mode chooser and `references/playbooks.md` for setup and execution details.
+Pick the lightest mode that fits the task. Use `references/modes.md` for the quick chooser and `references/playbooks.md` for setup and execution details.
 
 | Mode | Use For |
 |---|---|
@@ -147,6 +147,7 @@ Load only what is needed:
 - `references/playbooks.md` for mode-specific setup and execution
 - `references/logging.md` for experiment logs and result artifacts
 - `scripts/init_run.py` when the task needs a durable run folder with a contract and result log
+- `assets/program-template.md` and `assets/results.tsv` when the user wants manual templates instead of generated scaffolding
 
 ## Safety
 

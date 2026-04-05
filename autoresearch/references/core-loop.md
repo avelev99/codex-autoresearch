@@ -19,7 +19,13 @@ Optional but useful:
 - git policy
 - artifact policy
 
+If runtime, sample size, or evaluation window affects the metric, keep that budget stable enough that iterations remain comparable.
+
+If the run is expected to span many iterations or outlive the current chat, create a durable run folder first. The recommended scaffold is `.autoresearch/<tag>/` with `contract.md`, `results.tsv`, `notes.md`, and `summary.md`. Use `scripts/init_run.py` when you want this structure deterministically.
+
 If the repo is dirty, do not assume commit-based iteration is safe. Either work without git memory or ask the user how they want to handle local changes.
+
+Treat the run contract as stable during a loop. If the contract changes materially, restate the baseline before continuing.
 
 ## Review
 

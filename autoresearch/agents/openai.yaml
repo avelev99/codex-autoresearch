@@ -1,7 +1,7 @@
 interface:
   display_name: "Autoresearch"
   short_description: "Metric-driven iteration for Codex"
-  default_prompt: "Use $autoresearch to set up a bounded, metric-driven iteration loop for this repo."
+  default_prompt: "Use $autoresearch to define a run contract, establish a baseline, and execute a bounded keep-or-revert iteration loop for this repo."
 
 policy:
   allow_implicit_invocation: true
